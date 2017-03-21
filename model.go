@@ -9,24 +9,43 @@ import (
 	"strings"
 )
 
-func main() {
-	model := load("model.txt")
-	fmt.Println(len(model))
-}
-
 type WordVector struct {
 	word    string
 	vectors []float32
 }
 
-func load(filename string) []WordVector {
+type WordVectors []WordVector
+
+func (vectors WordVectors) findVector(word string) (bool, WordVector){
+	for _,vector := range vectors{
+		if vector.word == word {
+			return true, vector
+		}
+	}
+	return false, WordVector{word, []float32{}}
+}
+
+func main() {
+	model := load("model.txt")
+
+	found, vector := model.findVector("whale")
+
+	if found {
+		fmt.Println("found", vector.word)
+	}
+
+	fmt.Println(len(model))
+}
+
+
+func load(filename string) WordVectors {
 	file, err := os.Open(filename)
 	defer file.Close()
 
 	if err != nil {
 		log.Fatal(err)
 	}
-	result := []WordVector{}
+	result := WordVectors{}
 
 	scanner := bufio.NewScanner(file)
 	firstLine := true
