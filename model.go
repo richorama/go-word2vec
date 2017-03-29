@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"fmt"
 	"log"
 	"os"
 	"strconv"
@@ -17,22 +16,7 @@ type WordVector struct {
 
 type WordVectors []WordVector
 
-func main() {
-	model := load("model.txt")
-
-	found, vector := model.FindVector("whale")
-
-	if found {
-		fmt.Println("found", vector.word)
-		vector.Add(vector)
-	}
-
-
-	fmt.Println(len(model))
-}
-
-
-func load(filename string) WordVectors {
+func Load(filename string) WordVectors {
 	file, err := os.Open(filename)
 	defer file.Close()
 
@@ -46,8 +30,6 @@ func load(filename string) WordVectors {
 	for scanner.Scan() {
 		var line = strings.Split(scanner.Text(), " ")
 		if firstLine {
-			fmt.Println("words " + line[0])
-			fmt.Println("vectors " + line[1])
 			firstLine = false
 		} else {
 			wv := parseLine(line)
@@ -114,7 +96,7 @@ func (vectors WordVectors) Nearest(vector WordVector) (bool, WordVector){
 	shortestVector := vector
 
 	for _,vector2 := range vectors{
-		if vector2.word == vector2.word {
+		if vector2.word == vector.word {
 			continue
 		}
 
